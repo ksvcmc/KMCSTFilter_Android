@@ -7,14 +7,14 @@
 **贴纸特效动作**:贴纸里可能含有点头，摇头，张嘴等触发特效的动作，KMCArMaterial里详细定义了具体的触发动作和tips.  
 
 ## 安装
-demo目录:
-**demo**:商汤贴纸示例工程
-**demo/libs**: 魔方sdk包libkmcfilter.jar，以及厂家sdk包
-此外，gradle需要依赖libksylive库:  
-compile 'com.ksyun.media:libksylive-java:2.3.2'  
-compile 'com.ksyun.media:libksylive-arm64:2.3.2'  
-compile 'com.ksyun.media:libksylive-armv7a:2.3.2'  
-compile 'com.ksyun.media:libksylive-x86:2.3.2'  
+demo目录:  
+**demo**:商汤贴纸示例工程  
+**demo/libs**: 魔方sdk包libkmcfilter.jar，以及厂家sdk包  
+此外，gradle需要依赖libksylive库:    
+compile 'com.ksyun.media:libksylive-java:2.3.2'   
+compile 'com.ksyun.media:libksylive-arm64:2.3.2'   
+compile 'com.ksyun.media:libksylive-armv7a:2.3.2'   
+compile 'com.ksyun.media:libksylive-x86:2.3.2'   
 
 ## SDK包总体介绍
 libkmcfilter对外提供统一的接口:  
@@ -84,8 +84,8 @@ void startShowingMaterial(KMCArMaterial material);
 5.下载安卓/iOS版本的SDK集成进项目。
 ![步骤6](https://raw.githubusercontent.com/wiki/ksvcmc/KMCSTFilter_Android/step6.png "接入步骤6")
 
-6.参照文档和DEMO填写TOKEN，就可以Run通项目了。
-7.试用中或试用结束后，有意愿购买该服务可以与我们的商务人员联系购买。
+6.参照文档和DEMO填写TOKEN，就可以Run通项目了。  
+7.试用中或试用结束后，有意愿购买该服务可以与我们的商务人员联系购买。  
 （商务Email:KSC-VBU-KMC@kingsoft.com）
 ## 反馈与建议  
 主页：[金山魔方](https://docs.ksyun.com/read/latest/142/_book/index.html)  
