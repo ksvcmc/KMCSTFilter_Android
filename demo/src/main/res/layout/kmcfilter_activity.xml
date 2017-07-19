@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/recorder_bg_new" >
+
+    <android.opengl.GLSurfaceView
+        android:id="@+id/kmc_camera_preview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true" />
+
+    <com.ksyun.KMCStFilterDemo.CameraHintView
+        android:id="@+id/kmc_camera_hint"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true" />
+
+    <ImageView
+        android:id="@+id/kmc_switch_cam"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="23dp"
+        android:layout_gravity="top"
+        android:background="@drawable/switch_camera" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/kmc_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="98dp"
+        android:background="@color/grey_bg"
+        android:scrollbars="none"
+        android:layout_above="@+id/sticker_type_view">
+    </android.support.v7.widget.RecyclerView>
+
+    <LinearLayout
+        android:id="@+id/sticker_type_view"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/grey_bg"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:id="@+id/face_sticker_layout"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_weight="1">
+            <ImageView
+                android:id="@+id/face_sticker_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:src="@drawable/face_sticker_off"/>
+            <TextView
+                android:id="@+id/face_sticker_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/tab_text_off"
+                android:text="人脸贴纸"/>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/action_sticker_layout"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_weight="1">
+            <ImageView
+                android:id="@+id/action_sticker_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:src="@drawable/action_sticker_off"/>
+            <TextView
+                android:id="@+id/action_sticker_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/tab_text_off"
+                android:text="动作贴纸"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

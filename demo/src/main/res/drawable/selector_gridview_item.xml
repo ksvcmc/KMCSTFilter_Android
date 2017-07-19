@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:state_selected="true" >
+        <shape>
+            <!-- 描边 -->
+            <stroke
+                android:width="2dp"
+                android:color="#0099FF"/>
+            <!-- 圆角 -->
+            <corners
+                android:radius="2dp" />
+        </shape>
+    </item>
+
+    <item android:state_pressed="true" >
+        <shape>
+            <!-- 描边 -->
+            <stroke
+                android:width="2dp"
+                android:color="#0099FF"/>
+            <!-- 圆角 -->
+            <corners
+                android:radius="2dp" />
+        </shape>
+    </item>
+
+    <item android:state_focused="true" >
+        <shape>
+            <!-- 描边 -->
+            <stroke
+                android:width="2dp"
+                android:color="#0099FF"/>
+            <!-- 圆角 -->
+            <corners
+                android:radius="2dp" />
+        </shape>
+    </item>
+
+    <item android:state_activated="true" >
+        <shape>
+            <!-- 描边 -->
+            <stroke
+                android:width="2dp"
+                android:color="#0099FF"/>
+            <!-- 圆角 -->
+            <corners
+                android:radius="2dp" />
+        </shape>
+    </item>
+
+    <item>
+        <shape>
+            <stroke
+                android:width="3dp"
+                android:color="@android:color/transparent"/>
+        </shape>
+    </item>
+</selector>
