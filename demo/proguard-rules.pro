@@ -15,3 +15,26 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+-keep class com.ksyun.** {
+  *;
+}
+
+-keep class com.ksy.statlibrary.** {
+  *;
+}
+
+-keep class com.ksyun.media.streamer.** {
+  *;
+}
+
+-keep class com.ksyun.media.player.** {
+  *;
+}
+
+-keep class com.ksyun.media.kmcfilter.** {
+*;
+}
+
+-keep class com.sensetime.sensear.** {
+*;
+}
