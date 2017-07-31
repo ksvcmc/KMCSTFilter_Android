@@ -1,6 +1,8 @@
 # 金山云魔方贴纸API文档
 ## 项目背景
 金山魔方是一个多媒体能力提供平台，通过统一接入API、统一鉴权、统一计费等多种手段，降低客户接入多媒体处理能力的代价，提供多媒体能力供应商的效率。 本文档主要针对统一FILTER功能而说明。
+## 效果展示
+![Alt text](https://raw.githubusercontent.com/wiki/ksvcmc/KMCSTFilter_iOS/img.jpg)
 ## 名词解释
 **贴纸资源**:下图右侧，选中icon后下载下来并且出现在人脸上的图案为贴纸资源。  
 **缩略图**:下图左侧下方十个格子中，每个格子中的的icon即为滤镜缩略图。  
@@ -87,6 +89,8 @@ void startShowingMaterial(KMCArMaterial material);
 6.参照文档和DEMO填写TOKEN，就可以Run通项目了。  
 7.试用中或试用结束后，有意愿购买该服务可以与我们的商务人员联系购买。  
 （商务Email:KSC-VBU-KMC@kingsoft.com）
+## Demo下载
+![Alt text](https://raw.githubusercontent.com/wiki/ksvcmc/KMCSTFilter_iOS/code.png)
 ## 反馈与建议  
 主页：[金山魔方](https://docs.ksyun.com/read/latest/142/_book/index.html)  
 邮箱：ksc-vbu-kmc-dev@kingsoft.com  
