@@ -15,6 +15,9 @@ token与应用包名为一一对应的关系;
 工程目录:   
 **demo**:商汤贴纸示例工程  
 **libs**: 魔方sdk包libkmcfilter.jar，以及厂家sdk包  
+
+**注: demo工程使用软链接引用libs目录，对于windows平台做Android开发的用户，需要手动将libs目录拷贝到demo目录下。**
+
 此外，gradle需要依赖libksylive库:    
 compile 'com.ksyun.media:libksylive-java:2.3.2'   
 compile 'com.ksyun.media:libksylive-arm64:2.3.2'   
