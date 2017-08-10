@@ -11,8 +11,7 @@
 SDK在使用时需要用token进行鉴权后方可使用，token申请方式见**接入步骤**部分;  
 token与应用包名为一一对应的关系;
 
-## 安装
-工程目录:   
+## 工程目录:    
 **demo**:商汤贴纸示例工程  
 **libs**: 魔方sdk包libkmcfilter.jar，以及厂家sdk包  
 
@@ -23,6 +22,38 @@ compile 'com.ksyun.media:libksylive-java:2.3.2'
 compile 'com.ksyun.media:libksylive-arm64:2.3.2'   
 compile 'com.ksyun.media:libksylive-armv7a:2.3.2'   
 compile 'com.ksyun.media:libksylive-x86:2.3.2'   
+
+
+## 导入SDK
+引入目标库, 将libs目录下的库文件引入到目标工程中并添加依赖。
+
+可参考下述配置方式（以Android Studio为例）：
+ +  推荐直接使用gradle方式集成：
+  
+    ```
+       allprojects {
+         repositories {
+             jcenter()
+       }
+       
+       dependencies {
+        compile 'com.ksyun.mc:libkmcfilter_sensetime:1.0.4'
+        compile 'com.ksyun.mc:SenseTimeAR:1.0.4'
+       }
+    ```
+
+ +  手动下载集成
+   将libs目录copy到目标工程的根目录下；
+   修改目标工程的build.gradle文件，配置jniLibs路径：
+   
+    ```
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+    ```
+
 
 ## SDK包总体介绍
 libkmcfilter对外提供统一的接口:  
