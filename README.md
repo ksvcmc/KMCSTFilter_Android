@@ -9,7 +9,8 @@
 **贴纸特效动作**:贴纸里可能含有点头，摇头，张嘴等触发特效的动作，KMCArMaterial里详细定义了具体的触发动作和tips.  
 ## 鉴权
 SDK在使用时需要用token进行鉴权后方可使用，token申请方式见**接入步骤**部分;  
-token与应用包名为一一对应的关系;
+token与应用包名为一一对应的关系;  
+鉴权错误码见：https://github.com/ksvcmc/KMCAgoraVRTC_Android/wiki/auth_error
 
 ## 工程目录:    
 **demo**:商汤贴纸示例工程  
