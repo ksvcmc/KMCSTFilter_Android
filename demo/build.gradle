@@ -2,13 +2,13 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 24
-    buildToolsVersion "24.0.1"
+    buildToolsVersion '25.0.0'
     defaultConfig {
         applicationId "com.ksyun.KMCStFilterDemo"
         minSdkVersion 18
         targetSdkVersion 24
         versionCode 1
-        versionName "1.0.3"
+        versionName "1.0.5"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     sourceSets{
@@ -16,9 +16,18 @@ android {
             jniLibs.srcDir 'libs'
         }
     }
+    signingConfigs {
+        config {
+            keyAlias 'ksystreamer'
+            keyPassword 'kscloud'
+            storeFile file('../ksystreamer.jks')
+            storePassword 'kscloud'
+        }
+    }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            signingConfig signingConfigs.config
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -32,15 +41,15 @@ repositories {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
     compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.android.support:recyclerview-v7:24.2.1'
-    testCompile 'junit:junit:4.12'
-    compile (name:'sensearsdk-release', ext: 'aar')
-    compile 'com.ksyun.media:libksylive-java:2.3.2'
-    compile 'com.ksyun.media:libksylive-arm64:2.3.2'
-    compile 'com.ksyun.media:libksylive-armv7a:2.3.2'
-    compile 'com.ksyun.media:libksylive-x86:2.3.2'
+    compile 'com.ksyun.media:libksylive-java:2.4.5'
+    compile 'com.ksyun.media:libksylive-arm64:2.4.5'
+    compile 'com.ksyun.media:libksylive-armv7a:2.4.5'
+    compile 'com.ksyun.media:libksylive-x86:2.4.5'
+   compile (name:'sensearsdk-release', ext: 'aar')
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+    compile 'com.tencent.bugly:crashreport:latest.release'
+    compile 'com.tencent.bugly:nativecrashreport:latest.release'
 }
