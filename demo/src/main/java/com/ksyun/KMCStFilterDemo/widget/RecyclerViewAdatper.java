@@ -18,6 +18,7 @@ import android.widget.ProgressBar;
 import com.ksyun.KMCStFilterDemo.MaterialInfoItem;
 import com.ksyun.KMCStFilterDemo.R;
 
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +55,7 @@ public class RecyclerViewAdatper extends RecyclerView.Adapter {
     }
 
     public RecyclerViewAdatper(List<MaterialInfoItem> materialList, Context context) {
-        this.mContext = context;
+        this.mContext = context.getApplicationContext();
         this.mImageList = materialList;
         mInflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         int count = getItemCount();
@@ -70,7 +71,7 @@ public class RecyclerViewAdatper extends RecyclerView.Adapter {
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
         view.setLayoutParams(lp);
-        return new MaterialViewHolder(view);
+        return new MaterialViewHolder(view, new WeakReference<RecyclerViewAdatper>(this));
     }
 
     @Override
@@ -122,16 +123,18 @@ public class RecyclerViewAdatper extends RecyclerView.Adapter {
         this.mRecyclerView = view;
     }
 
-    class MaterialViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
-            View.OnLongClickListener {
+    private static class MaterialViewHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener, View.OnLongClickListener {
+        private final WeakReference<RecyclerViewAdatper> adatper;
         private ImageView mImage;
         private ImageView mDLIndImage;
         private ProgressBar mDownloadProgress;
         private CircleProgressBar mCoolDownProgressBar;
         private int position;
 
-        public MaterialViewHolder(View itemView) {
+        public MaterialViewHolder(View itemView, WeakReference<RecyclerViewAdatper> adapter) {
             super(itemView);
+            this.adatper = adapter;
             this.mImage=(ImageView)itemView.findViewById(R.id.gimg_list_item);
             this.mDLIndImage = (ImageView)itemView.findViewById(R.id.download_ind);
             this.mDownloadProgress = (ProgressBar) itemView.findViewById(R.id.process_download);
@@ -143,15 +146,17 @@ public class RecyclerViewAdatper extends RecyclerView.Adapter {
 
         @Override
         public void onClick(View v) {
-            if (null != onRecyclerViewListener) {
-                onRecyclerViewListener.onItemClick(position);
+            if (adatper.get() != null &&
+                    null != adatper.get().onRecyclerViewListener) {
+                adatper.get().onRecyclerViewListener.onItemClick(position);
             }
         }
 
         @Override
         public boolean onLongClick(View v) {
-            if(null != onRecyclerViewListener){
-                return onRecyclerViewListener.onItemLongClick(position);
+            if(adatper.get() != null &&
+                    null != adatper.get().onRecyclerViewListener) {
+                return adatper.get().onRecyclerViewListener.onItemLongClick(position);
             }
             return false;
         }

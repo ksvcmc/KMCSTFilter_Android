@@ -15,6 +15,16 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+-dontskipnonpubliclibraryclassmembers
+
+-dontusemixedcaseclassnames
+-dontskipnonpubliclibraryclasses
+-dontpreverify
+-ignorewarnings
+-verbose
+-dontoptimize
+-dontwarn
+
 -keep class com.ksyun.** {
   *;
 }
@@ -23,16 +33,15 @@
   *;
 }
 
--keep class com.ksyun.media.streamer.** {
+-dontwarn com.tencent.bugly.**
+-keep public class com.tencent.bugly.**{*;}
+
+-keep class com.ksyun.** {
   *;
 }
 
--keep class com.ksyun.media.player.** {
+-keep class com.ksy.statlibrary.** {
   *;
-}
-
--keep class com.ksyun.media.kmcfilter.** {
-*;
 }
 
 -keep class com.sensetime.sensear.** {

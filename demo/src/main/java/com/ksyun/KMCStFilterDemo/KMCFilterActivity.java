@@ -40,12 +40,11 @@ import com.ksyun.media.kmcfilter.KMCFilterManager;
 import com.ksyun.media.streamer.capture.camera.CameraTouchHelper;
 import com.ksyun.media.streamer.filter.imgtex.ImgBeautyDenoiseFilter;
 import com.ksyun.media.streamer.filter.imgtex.ImgFilterBase;
-import com.ksyun.media.streamer.filter.imgtex.ImgTexFilterBase;
-import com.ksyun.media.streamer.filter.imgtex.ImgTexFilterMgt;
 import com.ksyun.media.streamer.kit.KSYStreamer;
 import com.ksyun.media.streamer.kit.StreamerConstants;
 import com.ksyun.media.streamer.logstats.StatsLogReport;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -70,6 +69,7 @@ public class KMCFilterActivity extends Activity implements
     private ImageView mFaceStikcerImg;
     private TextView mActionStikcerTxt;;
     private TextView mFaceStikcerTxt;
+    private CameraTouchHelper mCameraTouchHelper;
 
     private ButtonObserver mObserverButton;
 
@@ -83,6 +83,7 @@ public class KMCFilterActivity extends Activity implements
 
     private RecyclerView mRecyclerView = null;
     private RecyclerViewAdatper mRecyclerViewAdatper = null;
+    private SpacesItemDecoration mSpacesItemDecoration;
 
     private final static int MSG_LOADTHUMB = 0;
     private final static int MSG_DOWNLOADSUCCESS = 1;
@@ -110,52 +111,53 @@ public class KMCFilterActivity extends Activity implements
     //auth
     //the uri of your appServer
     private boolean authorized = false;
-    public static String AUTH_SERVER_URI = "http://kmc.api.ksyun.com";
-    private HttpRequestTask mAuthTask;
-    private HttpRequestTask.HttpResponseListener mAuthResponse;
 
-    protected Handler mHandler = new Handler(Looper.getMainLooper()) {
+    protected Handler mHandler = new MyHandler(this);
+
+    private static class MyHandler extends Handler {
+        private final WeakReference<KMCFilterActivity> mActivity;
+
+        public MyHandler(KMCFilterActivity activity) {
+            super(Looper.getMainLooper());
+            this.mActivity = new WeakReference<KMCFilterActivity>(activity);
+        }
+
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.what) {
+            if (mActivity.get() == null) {
+                return;
+            }
 
+            switch (msg.what) {
                 case MSG_GETLISTSIZE:
-                    initMaterialTabTypeView();
+                    mActivity.get().initMaterialTabTypeView();
                     break;
                 case MSG_LOADTHUMB:
-                    mRecyclerViewAdatper.setItemState(msg.arg2,
+                    mActivity.get().mRecyclerViewAdatper.setItemState(msg.arg2,
                             RecyclerViewAdatper.STATE_DOWNLOADTHUMBNAIL);
-                    updateListView(msg.arg2);
-                    mRecyclerViewAdatper.notifyDataSetChanged();
+                    mActivity.get().updateListView(msg.arg2);
+                    mActivity.get().mRecyclerViewAdatper.notifyDataSetChanged();
 
                     break;
                 case MSG_DOWNLOADSUCCESS:
-                    mRecyclerViewAdatper.setItemState(msg.arg1,
+                    mActivity.get().mRecyclerViewAdatper.setItemState(msg.arg1,
                             RecyclerViewAdatper.STATE_DOWNLOADED);
-                    updateListView(msg.arg1);
-                    mRecyclerViewAdatper.notifyDataSetChanged();
-                    updateCoolDownView();
+                    mActivity.get().updateListView(msg.arg1);
+                    mActivity.get().mRecyclerViewAdatper.notifyDataSetChanged();
+                    mActivity.get().updateCoolDownView();
                     break;
                 case MSG_STARTDOWNLOAD:
-                    mRecyclerViewAdatper.setItemState(msg.arg1,
+                    mActivity.get().mRecyclerViewAdatper.setItemState(msg.arg1,
                             RecyclerViewAdatper.STATE_DOWNLOADING);
-                    updateListView(msg.arg1);
-                    mRecyclerViewAdatper.notifyDataSetChanged();
-                    break;
-                case REPORT_APPDATA_MESSAGE:
-                    Bundle bundle = msg.getData();
-                    String jsonStr = bundle.getString(REPORT_DATA);
-                    break;
-                case MSG_ENABLEPUSH:
-                    ImageView v = (ImageView) msg.obj;
-                    v.setEnabled(true);
+                    mActivity.get().updateListView(msg.arg1);
+                    mActivity.get().mRecyclerViewAdatper.notifyDataSetChanged();
                     break;
                 default:
                     Log.e(TAG, "Invalid message");
                     break;
             }
         }
-    };
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -190,7 +192,8 @@ public class KMCFilterActivity extends Activity implements
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
         mLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.addItemDecoration(new SpacesItemDecoration(10));
+        mSpacesItemDecoration = new SpacesItemDecoration(10);
+        mRecyclerView.addItemDecoration(mSpacesItemDecoration);
         //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
         mRecyclerView.setHasFixedSize(true);
 
@@ -214,25 +217,12 @@ public class KMCFilterActivity extends Activity implements
         mStreamer.setOnErrorListener(mOnErrorListener);
         mStreamer.setOnLogEventListener(mOnLogEventListener);
 
-        mStreamer.getImgTexFilterMgt().setFilter(mStreamer.getGLRender(),
-                ImgTexFilterMgt.KSY_FILTER_BEAUTY_DENOISE);
-        mStreamer.setEnableImgBufBeauty(true);
-        mStreamer.getImgTexFilterMgt().setOnErrorListener(new ImgTexFilterBase.OnErrorListener() {
-            @Override
-            public void onError(ImgTexFilterBase filter, int errno) {
-                Toast.makeText(KMCFilterActivity.this, "当前机型不支持该滤镜",
-                        Toast.LENGTH_SHORT).show();
-                mStreamer.getImgTexFilterMgt().setFilter(mStreamer.getGLRender(),
-                        ImgTexFilterMgt.KSY_FILTER_BEAUTY_DISABLE);
-            }
-        });
-
         // touch focus and zoom support
-        CameraTouchHelper cameraTouchHelper = new CameraTouchHelper();
-        cameraTouchHelper.setCameraCapture(mStreamer.getCameraCapture());
-        mCameraPreviewView.setOnTouchListener(cameraTouchHelper);
+        mCameraTouchHelper = new CameraTouchHelper();
+        mCameraTouchHelper.setCameraCapture(mStreamer.getCameraCapture());
+        mCameraPreviewView.setOnTouchListener(mCameraTouchHelper);
         // set CameraHintView to show focus rect and zoom ratio
-        cameraTouchHelper.setCameraHintView(mCameraHintView);
+        mCameraTouchHelper.setCameraHintView(mCameraHintView);
 
         doAuth();
 
@@ -246,7 +236,7 @@ public class KMCFilterActivity extends Activity implements
         startCameraPreviewWithPermCheck();
         mPause = false;
         mStreamer.onResume();
-        this.initMaterialsRecyclerView();
+        initMaterialsRecyclerView();
     }
 
     @Override
@@ -269,9 +259,32 @@ public class KMCFilterActivity extends Activity implements
             mMainHandler.removeCallbacksAndMessages(null);
             mMainHandler = null;
         }
-        mStreamer.release();
+        if (mHandler != null) {
+            mHandler.removeCallbacksAndMessages(null);
+            mHandler = null;
+        }
+        if (mFaceMaterialList != null) {
+            mFaceMaterialList.clear();
+            mFaceMaterialList = null;
+        }
+        if (mActionMaterialList != null) {
+            mActionMaterialList.clear();
+            mActionMaterialList = null;
+        }
 
-        KMCAuthManager.getInstance().removeAuthResultListener(mCheckAuthResultListener);
+        mStreamer.release();
+        mStreamer.getImgTexFilterMgt().release();
+        mStreamer.setOnErrorListener(null);
+        mStreamer.setOnInfoListener(null);
+        mStreamer.setOnLogEventListener(null);
+
+        KMCAuthManager.getInstance().release();
+        KMCFilterManager.getInstance().release();
+
+        if (mNullBitmap != null) {
+            mNullBitmap.recycle();
+            mNullBitmap = null;
+        }
     }
 
     @Override
@@ -382,12 +395,14 @@ public class KMCFilterActivity extends Activity implements
                     break;
                 case StreamerConstants.KSY_STREAMER_CAMERA_ERROR_SERVER_DIED:
                     mStreamer.stopCameraPreview();
-                    mMainHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            startCameraPreviewWithPermCheck();
-                        }
-                    }, 5000);
+                    if (mMainHandler != null) {
+                        mMainHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                startCameraPreviewWithPermCheck();
+                            }
+                        }, 5000);
+                    }
                     break;
                 case StreamerConstants.KSY_STREAMER_VIDEO_ENCODER_ERROR_UNSUPPORTED:
                 case StreamerConstants.KSY_STREAMER_VIDEO_ENCODER_ERROR_UNKNOWN:
@@ -473,7 +488,8 @@ public class KMCFilterActivity extends Activity implements
     /**
      * 单独下载贴纸素材的回调对象
      */
-    private KMCFilterManager.DownloadMaterialListener mDownloadListener = new KMCFilterManager.DownloadMaterialListener() {
+    private KMCFilterManager.DownloadMaterialListener mDownloadListener =
+            new KMCFilterManager.DownloadMaterialListener() {
         /**
          * 下载成功
          * @param material 下载成功的素材
@@ -490,7 +506,9 @@ public class KMCFilterActivity extends Activity implements
                 }
             }
             Log.d(TAG, "download success for position " + position);
-            mHandler.sendMessage(mHandler.obtainMessage(MSG_DOWNLOADSUCCESS, position, 0));
+            if (mHandler != null) {
+                mHandler.sendMessage(mHandler.obtainMessage(MSG_DOWNLOADSUCCESS, position, 0));
+            }
 
         }
 
@@ -753,85 +771,94 @@ public class KMCFilterActivity extends Activity implements
         });
     }
 
+    private KMCFilterManager.FetchMaterialListener mFetchMaterialListener =
+            new KMCFilterManager.FetchMaterialListener() {
+        @Override
+        public void onSuccess(List<KMCArMaterial> list) {
+            List<KMCArMaterial> adlist = list;
+            for (int i = 0; i < adlist.size(); i++) {
+                KMCArMaterial material = adlist.get(i);
+                MaterialInfoItem adinfo = new MaterialInfoItem(material, null);
+
+                if (KMCFilterManager.getInstance().isMaterialDownloaded(getApplicationContext(),
+                        material)) {
+                    adinfo.setHasDownload(true);
+                } else {
+                    adinfo.setHasDownload(false);
+                }
+                if (material.actionId == 0) {
+                    mFaceMaterialList.add(adinfo);
+                } else {
+                    mActionMaterialList.add(adinfo);
+                }
+
+                if (mHandler != null) {
+                    Message msg = mHandler.obtainMessage(MSG_GETLISTSIZE);
+//                            msg.arg1 = count;
+                    mHandler.sendMessage(msg);
+                }
+            }
+
+
+            for (int i = 1; i < mFaceMaterialList.size(); i++) {
+                MaterialInfoItem adinfo = mFaceMaterialList.get(i);
+
+                String thumbnailurlStr = adinfo.material.thumbnailURL;
+                Bitmap thumbnail = null;
+                try {
+                    thumbnail = ApiHttpUrlConnection.getImageBitmap(thumbnailurlStr);
+                } catch (Exception e) {
+                    thumbnail = BitmapFactory.decodeResource(getResources(), R.drawable.love);
+                    reportError("get material thumbnail failed");
+                }
+                adinfo.thumbnail = thumbnail;
+                mFaceMaterialList.set(i, adinfo);
+
+                if (mHandler != null) {
+                    Message msg = mHandler.obtainMessage(MSG_LOADTHUMB);
+//                            msg.arg1 = count;
+                    msg.arg2 = i + 1;
+                    mHandler.sendMessage(msg);
+                }
+            }
+
+            for (int i = 1; i < mActionMaterialList.size(); i++) {
+                MaterialInfoItem adinfo = mActionMaterialList.get(i);
+
+                String thumbnailurlStr = adinfo.material.thumbnailURL;
+                Bitmap thumbnail = null;
+                try {
+                    thumbnail = ApiHttpUrlConnection.getImageBitmap(thumbnailurlStr);
+                } catch (Exception e) {
+                    thumbnail = BitmapFactory.decodeResource(getResources(), R.drawable.love);
+                    reportError("get material thumbnail failed");
+                }
+                adinfo.thumbnail = thumbnail;
+                mActionMaterialList.set(i, adinfo);
+
+                if (mHandler != null) {
+                    Message msg = mHandler.obtainMessage(MSG_LOADTHUMB);
+//                            msg.arg1 = count;
+                    msg.arg2 = i + 1;
+                    mHandler.sendMessage(msg);
+                }
+            }
+        }
+
+        @Override
+        public void onFailure(int erroCode, String msg) {
+            if (erroCode == Constants.AUTH_EXPIRED) {
+                makeToast("鉴权信息过期，请重新鉴权!");
+                doAuth();
+            }
+            reportError("fetch material list failed");
+        }
+    };
+
     private void fetchMaterial(String groupID) {
         // 从AR服务器获取贴纸列表, 并保存其信息
         KMCFilterManager.getInstance().fetchMaterials(getApplicationContext(),
-                groupID, new KMCFilterManager.FetchMaterialListener() {
-                    @Override
-                    public void onSuccess(List<KMCArMaterial> list) {
-                        List<KMCArMaterial> adlist = list;
-                        for (int i = 0; i < adlist.size(); i++) {
-                            KMCArMaterial material = adlist.get(i);
-                            MaterialInfoItem adinfo = new MaterialInfoItem(material, null);
-
-                            if (KMCFilterManager.getInstance().isMaterialDownloaded(getApplicationContext(),
-                                    material)) {
-                                adinfo.setHasDownload(true);
-                            } else {
-                                adinfo.setHasDownload(false);
-                            }
-                            if (material.actionId == 0) {
-                                mFaceMaterialList.add(adinfo);
-                            } else {
-                                mActionMaterialList.add(adinfo);
-                            }
-
-                            Message msg = mHandler.obtainMessage(MSG_GETLISTSIZE);
-//                            msg.arg1 = count;
-                            mHandler.sendMessage(msg);
-                        }
-
-
-                        for (int i = 1; i < mFaceMaterialList.size(); i++) {
-                            MaterialInfoItem adinfo = mFaceMaterialList.get(i);
-
-                            String thumbnailurlStr = adinfo.material.thumbnailURL;
-                            Bitmap thumbnail = null;
-                            try {
-                                thumbnail = ApiHttpUrlConnection.getImageBitmap(thumbnailurlStr);
-                            } catch (Exception e) {
-                                thumbnail = BitmapFactory.decodeResource(getResources(), R.drawable.love);
-                                reportError("get material thumbnail failed");
-                            }
-                            adinfo.thumbnail = thumbnail;
-                            mFaceMaterialList.set(i, adinfo);
-
-                            Message msg = mHandler.obtainMessage(MSG_LOADTHUMB);
-//                            msg.arg1 = count;
-                            msg.arg2 = i+1;
-                            mHandler.sendMessage(msg);
-                        }
-
-                        for (int i = 1; i < mActionMaterialList.size(); i++) {
-                            MaterialInfoItem adinfo = mActionMaterialList.get(i);
-
-                            String thumbnailurlStr = adinfo.material.thumbnailURL;
-                            Bitmap thumbnail = null;
-                            try {
-                                thumbnail = ApiHttpUrlConnection.getImageBitmap(thumbnailurlStr);
-                            } catch (Exception e) {
-                                thumbnail = BitmapFactory.decodeResource(getResources(), R.drawable.love);
-                                reportError("get material thumbnail failed");
-                            }
-                            adinfo.thumbnail = thumbnail;
-                            mActionMaterialList.set(i, adinfo);
-
-                            Message msg = mHandler.obtainMessage(MSG_LOADTHUMB);
-//                            msg.arg1 = count;
-                            msg.arg2 = i+1;
-                            mHandler.sendMessage(msg);
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(int erroCode, String msg) {
-                        if (erroCode == Constants.AUTH_EXPIRED) {
-                            makeToast("鉴权信息过期，请重新鉴权!");
-                            doAuth();
-                        }
-                        reportError("fetch material list failed");
-                    }
-                });
+                groupID, mFetchMaterialListener);
     }
 
     private void showMaterialLists() {
