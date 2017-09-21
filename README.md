@@ -38,8 +38,7 @@ compile 'com.ksyun.media:libksylive-x86:2.3.2'
        }
        
        dependencies {
-        compile 'com.ksyun.mc:libkmcfilter_sensetime:1.0.4'
-        compile 'com.ksyun.mc:SenseTimeAR:1.0.4'
+        compile 'com.ksyun.mc:libkmcfilter_sensetime:1.0.5'
        }
     ```
 
