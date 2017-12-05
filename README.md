@@ -24,7 +24,8 @@ compile 'com.ksyun.media:libksylive-arm64:2.3.2'
 compile 'com.ksyun.media:libksylive-armv7a:2.3.2'   
 compile 'com.ksyun.media:libksylive-x86:2.3.2'   
 
-
+## 支持的CPU架构
+ armv7, arm64
 ## 导入SDK
 引入目标库, 将libs目录下的库文件引入到目标工程中并添加依赖。
 
