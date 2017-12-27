@@ -1,4 +1,6 @@
 # 金山云魔方贴纸API文档
+[ ![Download](https://api.bintray.com/packages/ksvcmc/KMCFilter/libkmcfilter_sensetime/images/download.svg) ](https://bintray.com/ksvcmc/KMCFilter/libkmcfilter_sensetime/_latestVersion)
+
 ## 项目背景
 金山魔方是一个多媒体能力提供平台，通过统一接入API、统一鉴权、统一计费等多种手段，降低客户接入多媒体处理能力的代价，提供多媒体能力供应商的效率。 本文档主要针对统一FILTER功能而说明。
 ## 效果展示
