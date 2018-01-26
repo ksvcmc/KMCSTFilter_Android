@@ -8,7 +8,7 @@ android {
         minSdkVersion 18
         targetSdkVersion 24
         versionCode 1
-        versionName "1.0.5"
+        versionName "1.0.7"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     sourceSets{
@@ -43,10 +43,10 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.android.support:recyclerview-v7:24.2.1'
-    compile 'com.ksyun.media:libksylive-java:2.4.5'
-    compile 'com.ksyun.media:libksylive-arm64:2.4.5'
-    compile 'com.ksyun.media:libksylive-armv7a:2.4.5'
-    compile 'com.ksyun.media:libksylive-x86:2.4.5'
+    compile 'com.ksyun.media:libksylive-java:3.0.0'
+    compile 'com.ksyun.media:libksylive-arm64:3.0.0'
+    compile 'com.ksyun.media:libksylive-armv7a:3.0.0'
+    compile 'com.ksyun.media:libksylive-x86:3.0.0'
    compile (name:'sensearsdk-release', ext: 'aar')
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'

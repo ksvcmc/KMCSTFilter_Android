@@ -44,3 +44,4 @@ jni/__MACOSX/
 /KSYStreamerAndroidSDK.udb
 libksystreamer/.externalNativeBuild
 libkmcfilter/.externalNativeBuild
+*.hprof
