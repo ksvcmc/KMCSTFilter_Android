@@ -66,8 +66,7 @@ KMCAuthManager 提供鉴权功能
 KMCFilterManager 提供贴纸列表查询、贴纸下载等功能  
 
 
-## SDK使用指南  
-目前本sdk集成多家厂家信息,厂家的贴纸信息有的托管在金山的服务器，有的托管在厂家的服务器，具体信息可以咨询商务，本sdk只是提供统一的贴纸鉴权,下载，显示服务。
+## SDK使用指南
 + **鉴权**  
   本sdk包采用鉴权加密方式，需要通过商务渠道拿到授权的token信息，方可以使用，具体请咨询商务。
 鉴权函数如下，其中auth为ak信息，date为过期时间。  
@@ -80,8 +79,6 @@ KMCFilterManager 提供贴纸列表查询、贴纸下载等功能
 void authorize(Context context, String token, AuthResultListener listener)；
 ```
 
-+ **上传贴纸**（不在本sdk范围内,请参考控制台文档）   
- 客户根据自己选择的厂家，按照厂家要求，自己设计好贴纸，通过金山控制台上传贴纸。
 + **拉取贴纸索引信息**  
  客户可以在控制台把贴纸放入一个group里面，sdk通过groupID进行拉取，相关函数为：
 ```java
